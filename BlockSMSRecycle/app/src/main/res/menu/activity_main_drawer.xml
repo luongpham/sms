@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:id="@+id/item_message"
+            android:icon="@drawable/ic_chat_white_24dp"
+            android:title="Tin nhắn" />
+        <item android:id="@+id/item_msg_recy"
+            android:icon="@drawable/ic_chat_white_24dp"
+            android:title="Tin rác" />
+        <item android:id="@+id/item_rule"
+            android:icon="@drawable/ic_chat_white_24dp"
+            android:title="Luật chặn" />
+        <item android:id="@+id/item_msg_like"
+            android:icon="@drawable/ic_chat_white_24dp"
+            android:title="SMS hay"
+            />
+        <item android:id="@+id/item_setting"
+            android:title="Cài đặt"
+            android:icon="@drawable/ic_chat_white_24dp"
+            />
+        <item android:id="@+id/item_info"
+            android:title="Thông tin"
+            android:icon="@drawable/ic_chat_white_24dp"
+            />
+
+</menu>

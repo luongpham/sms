@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item
+            android:id="@+id/nav_first_fragment"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="Tin nhắn">
+
+        </item>
+        <item android:id="@+id/itemThanhToan"
+            android:title="Tin rác"
+            android:icon="@drawable/ic_history_black_24dp"
+            >
+
+        </item>
+        <item android:id="@+id/nav_second_fragment"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="Luật chặn"/>
+        <item android:id="@+id/nav_third_fragment"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="SMS hay"/>
+
+
+</menu>
