@@ -2,4 +2,5 @@
     <string name="app_name">BlockSMSRecycle</string>
     <string name="open">Mo</string>
     <string name="close">Dong</string>
+    <string name="ruleblock">Luật chặn</string>
 </resources>
