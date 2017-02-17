@@ -15,4 +15,46 @@
         android:background="@color/colorPrimary"
         >
     </android.support.v7.widget.Toolbar>
+
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFF00"
+        android:text="Nhập vào số rác:"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/editPrefixPhoneNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnSave"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Lưu số rác này"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFF00"
+        android:gravity="center_horizontal"
+        android:text="Danh sách số phone rác"
+        android:textSize="18sp" />
+
+    <ListView
+        android:id="@+id/lvPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
 </LinearLayout>
