@@ -1,12 +1,18 @@
 package com.luong.blocksmsrecycle.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.luong.blocksmsrecycle.Interface.IItemClick;
 import com.luong.blocksmsrecycle.Model.conversationlist.Conversation;
 import com.luong.blocksmsrecycle.R;
@@ -31,13 +37,12 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtConversationListName, txtBodyMsg;
+        ImageView imgAvatar;
         public ViewHolder(View itemView) {
             super(itemView);
-
+            imgAvatar = (ImageView) itemView.findViewById(R.id.conversation_list_avatar);
             txtConversationListName = (TextView) itemView.findViewById(R.id.conversation_list_name);
             txtBodyMsg = (TextView) itemView.findViewById(R.id.conversation_list_snippet);
-
-
         }
     }
     @Override
@@ -50,8 +55,20 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.txtConversationListName.setText(conversations.get(position).getAddress());
-        holder.txtBodyMsg.setText(conversations.get(position).getBody());
+        Conversation conversation = conversations.get(position);
+        holder.txtConversationListName.setText(conversation.getAddress());
+        holder.txtBodyMsg.setText(conversation.getBody());
+        TextDrawable drawable = null;
+        String nameAvatar = conversation.getAddress();
+        if (isPhoneNumberFormat(nameAvatar)) {
+            Drawable draw = ContextCompat.getDrawable(context, R.drawable.ic_person);
+            holder.imgAvatar.setImageDrawable(draw);
+        } else {
+            drawable = TextDrawable.builder()
+                    .buildRound(conversation.getAddress().substring(0,1), Color.BLUE);
+            holder.imgAvatar.setImageDrawable(drawable);
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,5 +82,13 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
         return conversations.size();
     }
 
+    public static boolean isPhoneNumberFormat(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return false;
+        }
+
+        char c = name.charAt(0);
+        return !name.contains("@") && (c == '+' || c == '(' || Character.isDigit(c));
+    }
 
 }

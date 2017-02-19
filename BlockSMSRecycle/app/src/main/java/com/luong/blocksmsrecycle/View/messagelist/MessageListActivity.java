@@ -37,6 +37,7 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
     MessageListAdapter messageListAdapter;
     PresenterLogicMessageList presenterLogicMessageList;
+    Conversation conversation;
 
 
     @Override
@@ -48,7 +49,7 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(0xFFFFFFFF);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Message");
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,9 +63,11 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
 
         long threadId = getIntent().getLongExtra("threadId",-1);
-        Conversation conversation = (Conversation) getIntent().getSerializableExtra("message");
+        conversation = (Conversation) getIntent().getSerializableExtra("message");
+        getSupportActionBar().setTitle(conversation.getAddress());
+
         Log.d("TEST",threadId+" "+ conversation.getMessageList().size());
-        messageListAdapter = new MessageListAdapter(this,conversation.getMessageList());
+        messageListAdapter = new MessageListAdapter(this,conversation.getMessageList(), conversation.getAddress());
         rvListMessage.setLayoutManager(mLinearLayoutManager);
         rvListMessage.setAdapter(messageListAdapter);
         messageListAdapter.notifyDataSetChanged();
@@ -99,7 +102,7 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void DisplayMessage(List<Message> messageList) {
-        messageListAdapter = new MessageListAdapter(this,messageList);
+        messageListAdapter = new MessageListAdapter(this,messageList, conversation.getAddress());
         rvListMessage.setLayoutManager(mLinearLayoutManager);
         rvListMessage.setAdapter(messageListAdapter);
         messageListAdapter.notifyDataSetChanged();

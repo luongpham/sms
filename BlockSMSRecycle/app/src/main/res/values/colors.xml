@@ -11,4 +11,5 @@
     <color name="theme_light_text_primary">#212121</color>
     <color name="theme_light_text_secondary">#707070</color>
     <color name="background">#e9e3dd</color>
+    <color name="colorBlue">#0000FF</color>
 </resources>

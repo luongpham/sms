@@ -34,4 +34,7 @@ dependencies {
     compile 'hani.momanii.supernova_emoji_library:supernova-emoji-library:0.0.2'
     compile 'me.himanshusoni.chatmessageview:chat-message-view:1.0.3'
 
+    //round image with text
+    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+
 }

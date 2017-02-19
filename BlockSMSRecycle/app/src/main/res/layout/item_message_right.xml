@@ -11,9 +11,14 @@
     android:paddingRight="16dp">
 
 
+    <!--<ImageView
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:id="@+id/ivUserChat"
+        android:layout_alignBottom="@+id/contentMessageChat" />-->
     <me.himanshusoni.chatmessageview.ChatMessageView
-        android:layout_toLeftOf="@+id/ivUserChat"
-        android:layout_toStartOf="@+id/ivUserChat"
         android:id="@+id/contentMessageChat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,7 +50,7 @@
         android:layout_alignRight="@id/contentMessageChat"
         android:layout_below="@id/contentMessageChat"
         android:orientation="horizontal">
-        <TextView
+      <!--  <TextView
             android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +59,7 @@
             android:text="aaaaa"
             android:layout_alignParentRight="true"
             android:textSize="12sp"
-            />
+            />-->
         <TextView
             android:text="22/06/2016"
             android:id="@+id/timestamp"

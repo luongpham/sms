@@ -1,8 +1,10 @@
 package com.luong.blocksmsrecycle.Model.conversationlist;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +78,14 @@ public class ModelConversation {
                 }
                 conversation.setMessageList(messages);
             }
-            conversation.setAddress(number);
+
+            String name = getContactName(mContext,number);
+            if (name != null ) {
+                conversation.setAddress(name);
+            } else {
+                conversation.setAddress(number);
+            }
+
             conversation.setBody(body[mycursor.getCount()-1]);
             conversations.add(conversation);
 
@@ -117,5 +126,24 @@ public class ModelConversation {
         mycursor.close();
 
         return messages;
+    }
+
+    public  String getContactName(Context context, String phoneNumber) {
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = null;
+        if(cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+
+        if(cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return contactName;
     }
 }

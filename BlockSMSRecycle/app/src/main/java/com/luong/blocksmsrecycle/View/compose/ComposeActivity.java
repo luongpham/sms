@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.EditText;
@@ -36,6 +37,19 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
         edPhone = (EditText) findViewById(R.id.contact);
         edMessage = (EmojiconEditText) findViewById(R.id.editTextMessage);
         imSendMessage = (ImageView) findViewById(R.id.buttonMessage);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(0xFFFFFFFF);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Soạn tin nhắn");
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed(); //or whatever you used to do on your onOptionItemSelected's android.R.id.home callback
+            }
+        });
 
         imSendMessage.setOnClickListener(this);
 

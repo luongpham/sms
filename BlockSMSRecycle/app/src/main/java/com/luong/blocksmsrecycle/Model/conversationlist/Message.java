@@ -9,6 +9,15 @@ import java.io.Serializable;
 public class Message implements Serializable{
     private String content;
     private int type;
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public int getType() {
         return type;

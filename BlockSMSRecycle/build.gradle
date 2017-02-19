@@ -16,6 +16,10 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://dl.bintray.com/hani-momanii/maven"}
+        maven {
+            url 'http://dl.bintray.com/amulyakhare/maven'
+        }
+
     }
 }
 
