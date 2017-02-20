@@ -36,12 +36,18 @@ public class SmsReceiver extends BroadcastReceiver {
                 SmsMessage sms = SmsMessage.createFromPdu((byte[])smsExtra[i]);
                 String body = sms.getMessageBody();
                 String address = sms.getOriginatingAddress();
+                long time = sms.getTimestampMillis();
                 message +="SMS From: "+ address +" :\n"+body+"\n";
                 XoaToanBoSmsRac(context, address);
+                insertSMSGarbage(address,body, time);
             }
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             Log.d("TEST", message+"test");
         }
+    }
+
+    private void insertSMSGarbage(String address, String body, long time) {
+        dataHelper.insertSMSGar(address, body, String.valueOf(time));
     }
 
     void XoaToanBoSmsRac(Context con, String phoneNumber)

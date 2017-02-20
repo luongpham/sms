@@ -153,4 +153,10 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        unregisterReceiver();
+    }
 }

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.luong.blocksmsrecycle.View.conversationlist.ConversationListFragment;
 import com.luong.blocksmsrecycle.View.ruleblock.RuleBlockActivity;
+import com.luong.blocksmsrecycle.View.sms_garbage.SMSGarActivity;
 
 public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.item_message:
                         break;
                     case R.id.item_msg_recy:
+                        Intent iMSGGAR = new Intent(MainActivity.this,SMSGarActivity.class);
+                        startActivity(iMSGGAR);
                         break;
                     case R.id.item_rule:
                         Intent iRule = new Intent(MainActivity.this, RuleBlockActivity.class);

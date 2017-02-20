@@ -24,6 +24,7 @@
         <activity android:name=".View.messagelist.MessageListActivity"/>
         <activity android:name=".View.compose.ComposeActivity"/>
         <activity android:name=".View.ruleblock.RuleBlockActivity"/>
+        <activity android:name=".View.sms_garbage.SMSGarActivity"/>
 
         <receiver android:name=".SmsReceiver" android:exported="true" >
             <intent-filter>
