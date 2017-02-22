@@ -2,7 +2,11 @@ package com.luong.blocksmsrecycle.View.conversationlist;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +28,7 @@ import com.luong.blocksmsrecycle.Interface.IItemClick;
 import com.luong.blocksmsrecycle.Model.conversationlist.Conversation;
 import com.luong.blocksmsrecycle.Presenter.conversationlist.PresenterLogicGetListConversation;
 import com.luong.blocksmsrecycle.R;
+import com.luong.blocksmsrecycle.SmsReceiver;
 import com.luong.blocksmsrecycle.View.compose.ComposeActivity;
 import com.luong.blocksmsrecycle.View.messagelist.MessageListActivity;
 
@@ -34,6 +39,7 @@ import java.util.List;
  */
 public class ConversationListFragment extends Fragment implements ViewGetListConversation, IItemClick, View.OnClickListener {
     public static final String TAG = "ConversationListFragment";
+    public static final int REQUES_CODE = 1;
 
     PresenterLogicGetListConversation presenterLogicGetListConversation;
     RecyclerView recyclerView;
@@ -54,6 +60,7 @@ public class ConversationListFragment extends Fragment implements ViewGetListCon
 
 
         presenterLogicGetListConversation = new PresenterLogicGetListConversation(this,getContext());
+        getActivity().registerReceiver(broadcastReceiver, new IntentFilter(SmsReceiver.ACTION_UPDATE_LESSON_NAME));
 
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS)
@@ -128,8 +135,36 @@ public class ConversationListFragment extends Fragment implements ViewGetListCon
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fab:
-                startActivity(new Intent(getActivity(),ComposeActivity.class));
+                startActivityForResult(new Intent(getActivity(),ComposeActivity.class), REQUES_CODE);
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUES_CODE && resultCode == Activity.RESULT_OK) {
+            presenterLogicGetListConversation.getListConversation();
+        }
+    }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            String kt = bundle.getString("sms");
+            if (kt.equals("yes")) {
+                presenterLogicGetListConversation.getListConversation();
+            }
+
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (broadcastReceiver != null) {
+            getActivity().unregisterReceiver(broadcastReceiver);
         }
     }
 }

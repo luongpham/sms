@@ -108,4 +108,9 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         return -1;
     }
 
+    public void refreshData(List<Message> messageList) {
+        this.messageList = messageList;
+        notifyDataSetChanged();
+    }
+
 }

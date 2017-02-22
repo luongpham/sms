@@ -29,6 +29,8 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
     EditText edPhone;
     EmojiconEditText edMessage;
     ImageView imSendMessage;
+    BroadcastReceiver broadcastReceiverSENT;
+    BroadcastReceiver broadcastReceiverDELIVERED;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +71,11 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonMessage:
-                if (edPhone.getText().toString().trim().length()>0 && edMessage.getText().toString().trim().length()>0)
+                if (edPhone.getText().toString().trim().length()>0 && edMessage.getText().toString().trim().length()>0) {
                     sendSMS(edPhone.getText().toString().trim(), edMessage.getText().toString().trim());
+                    finish();
+                    setResult(RESULT_OK);
+                }
                 else
                     Toast.makeText(getBaseContext(),
                             "Please enter both phone number and message.",
@@ -89,7 +94,7 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
         PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
 
         // ---when the SMS has been sent---
-        registerReceiver(new BroadcastReceiver() {
+        broadcastReceiverSENT = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
 
@@ -126,10 +131,11 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                 }
             }
-        }, new IntentFilter(SENT));
+        };
+        registerReceiver(broadcastReceiverSENT, new IntentFilter(SENT));
 
         // ---when the SMS has been delivered---
-        registerReceiver(new BroadcastReceiver() {
+        broadcastReceiverDELIVERED = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
 
@@ -148,7 +154,8 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                 }
             }
-        }, new IntentFilter(DELIVERED));
+        };
+        registerReceiver(broadcastReceiverDELIVERED, new IntentFilter(DELIVERED));
 
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
@@ -157,6 +164,10 @@ public class ComposeActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        unregisterReceiver();
+        if (broadcastReceiverSENT != null && broadcastReceiverDELIVERED != null){
+            unregisterReceiver(broadcastReceiverSENT);
+            unregisterReceiver(broadcastReceiverDELIVERED);
+        }
+
     }
 }

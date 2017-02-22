@@ -85,6 +85,7 @@ public class ModelConversation {
             } else {
                 conversation.setAddress(number);
             }
+            conversation.setNumberPhone(number);
 
             conversation.setBody(body[mycursor.getCount()-1]);
             conversations.add(conversation);

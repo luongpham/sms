@@ -15,6 +15,15 @@ public class Conversation implements Serializable{
     private int id_img;
     private long time;
     private List<Message> messageList;
+    private String numberPhone;
+
+    public String getNumberPhone() {
+        return numberPhone;
+    }
+
+    public void setNumberPhone(String numberPhone) {
+        this.numberPhone = numberPhone;
+    }
 
     public List<Message> getMessageList() {
         return messageList;

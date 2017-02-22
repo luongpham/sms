@@ -1,20 +1,29 @@
 package com.luong.blocksmsrecycle.View.messagelist;
 
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.luong.blocksmsrecycle.Adapter.MessageListAdapter;
 import com.luong.blocksmsrecycle.Model.conversationlist.Conversation;
 import com.luong.blocksmsrecycle.Model.conversationlist.Message;
 import com.luong.blocksmsrecycle.Presenter.messagelist.PresenterLogicMessageList;
 import com.luong.blocksmsrecycle.R;
+import com.luong.blocksmsrecycle.SmsReceiver;
 
 import java.util.List;
 
@@ -38,6 +47,9 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
     MessageListAdapter messageListAdapter;
     PresenterLogicMessageList presenterLogicMessageList;
     Conversation conversation;
+    BroadcastReceiver broadcastReceiverSENT;
+    BroadcastReceiver broadcastReceiverDELIVERED;
+    List<Message> messageList;
 
 
     @Override
@@ -58,16 +70,16 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         });
 
         bindViews();
-
-
-
+        registerReceiver(broadcastReceiver, new IntentFilter(SmsReceiver.ACTION_UPDATE_LESSON_NAME));
 
         long threadId = getIntent().getLongExtra("threadId",-1);
         conversation = (Conversation) getIntent().getSerializableExtra("message");
         getSupportActionBar().setTitle(conversation.getAddress());
 
+        messageList = conversation.getMessageList();
+
         Log.d("TEST",threadId+" "+ conversation.getMessageList().size());
-        messageListAdapter = new MessageListAdapter(this,conversation.getMessageList(), conversation.getAddress());
+        messageListAdapter = new MessageListAdapter(this, messageList, conversation.getAddress());
         rvListMessage.setLayoutManager(mLinearLayoutManager);
         rvListMessage.setAdapter(messageListAdapter);
         messageListAdapter.notifyDataSetChanged();
@@ -97,7 +109,19 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View view) {
-
+        if (edMessage.getText().toString().trim().length()>0) {
+            sendSMS(conversation.getNumberPhone(), edMessage.getText().toString().trim());
+            edMessage.setText("");
+            Message message = new Message();
+            message.setContent(edMessage.getText().toString().trim());
+            message.setType(2);
+            messageList.add(message);
+            messageListAdapter.refreshData(messageList);
+        }
+        else
+            Toast.makeText(getBaseContext(),
+                    "Please enter both phone number and message.",
+                    Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -106,5 +130,112 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         rvListMessage.setLayoutManager(mLinearLayoutManager);
         rvListMessage.setAdapter(messageListAdapter);
         messageListAdapter.notifyDataSetChanged();
+    }
+
+    private void sendSMS(String phoneNumber, String message) {
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
+
+        // ---when the SMS has been sent---
+        broadcastReceiverSENT = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+
+                switch (getResultCode()) {
+
+                    case Activity.RESULT_OK:
+
+                        Toast.makeText(getBaseContext(), "SMS sent",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+
+                        Toast.makeText(getBaseContext(), "Generic failure",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+
+                        Toast.makeText(getBaseContext(), "No service",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+
+                        Toast.makeText(getBaseContext(), "Null PDU",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+
+                        Toast.makeText(getBaseContext(), "Radio off",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+        registerReceiver(broadcastReceiverSENT, new IntentFilter(SENT));
+
+        // ---when the SMS has been delivered---
+        broadcastReceiverDELIVERED = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+
+                switch (getResultCode()) {
+
+                    case Activity.RESULT_OK:
+
+                        Toast.makeText(getBaseContext(), "SMS delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case Activity.RESULT_CANCELED:
+
+                        Toast.makeText(getBaseContext(), "SMS not delivered",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+        registerReceiver(broadcastReceiverDELIVERED, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+    }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            String kt = bundle.getString("sms");
+            String body = bundle.getString("body");
+            if (kt.equals("yes")) {
+                Message message = new Message();
+                message.setContent(body);
+                message.setType(1);
+                messageList.add(message);
+                messageListAdapter.refreshData(messageList);
+            }
+
+        }
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (broadcastReceiverSENT != null && broadcastReceiverDELIVERED != null){
+            unregisterReceiver(broadcastReceiverSENT);
+            unregisterReceiver(broadcastReceiverDELIVERED);
+        }
+        if (broadcastReceiver != null){
+            unregisterReceiver(broadcastReceiver);
+        }
+
+
     }
 }

@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.luong.blocksmsrecycle.Model.conversationlist.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,17 +64,22 @@ public class DataHelper extends SQLiteOpenHelper {
         return strings;
     }
 
-    public List<String> getListSMSGar() {
-        List<String> strings = new ArrayList<>();
+    public List<Message> getListSMSGar() {
+        List<Message> strings = new ArrayList<>();
 
         String []columns ={TB_SMS_INSERT_ADDRESS, TB_SMS_INSERT_BODY, TB_SMS_INSERT_TIME};
         Cursor cusor = sqLiteDatabase.query(TB_SMS_INSERT, columns , null, null, null, null, null);
         cusor.moveToFirst();
         String data="";
+        Message message;
         while(cusor.isAfterLast()==false)
         {
+            message = new Message();
             data= (String) cusor.getString(0).toString();//+" - " + (String)cusor.getString(1).toString();
-            strings.add(data);
+            message.setAddress(cusor.getString(0).toString());
+            message.setContent(cusor.getString(1).toString());
+            message.setTime(Long.parseLong(cusor.getString(2).toString()));
+            strings.add(message);
             cusor.moveToNext();
         }
         return strings;
@@ -115,6 +122,16 @@ public class DataHelper extends SQLiteOpenHelper {
             return false;
         }
 
+    }
+
+    public boolean deleteSMSGar(String time) {
+        if(sqLiteDatabase.delete(TB_SMS_INSERT, TB_SMS_INSERT_TIME+"=?", new String []{time}) != -1)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public  boolean update(String idUpdate, String value)
