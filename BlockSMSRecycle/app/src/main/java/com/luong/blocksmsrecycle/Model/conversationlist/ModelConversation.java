@@ -70,6 +70,7 @@ public class ModelConversation {
                     Message message = new Message();
                     message.setContent(body[i]);
                     message.setType(Integer.parseInt(mycursor.getString(mycursor.getColumnIndexOrThrow("type"))));
+                    message.setTime(Long.parseLong(mycursor.getString(mycursor.getColumnIndexOrThrow("date"))));
 
                     messages.add(message);
 

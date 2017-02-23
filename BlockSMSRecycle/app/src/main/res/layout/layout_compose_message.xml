@@ -16,47 +16,54 @@
         >
     </android.support.v7.widget.Toolbar>
 
-    <EditText
-        android:layout_below="@+id/toolbar"
-        android:id="@+id/contact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Phone"/>
-
     <RelativeLayout
-        android:background="#fff"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="2dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+        <EditText
 
-        android:layout_alignParentBottom="true">
-        <ImageView
-            android:id="@+id/buttonEmoji"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="4dp"
-            android:src="@drawable/smiley"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignBottom="@+id/editTextMessage"
-            />
-        <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+            android:id="@+id/contact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editTextMessage"
-            android:layout_toStartOf="@+id/buttonMessage"
-            android:layout_toRightOf="@+id/buttonEmoji"
-            android:layout_toEndOf="@+id/buttonEmoji"
-            emojicon:emojiconSize="28sp"/>
-        <ImageView
-            android:id="@+id/buttonMessage"
-            android:src="@android:drawable/ic_menu_send"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="4dp"
-            android:layout_alignBottom="@+id/editTextMessage"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            />
+            android:hint="Phone"
+            android:focusable="true"/>
+
+        <RelativeLayout
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+
+            android:layout_alignParentBottom="true">
+            <ImageView
+                android:id="@+id/buttonEmoji"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="4dp"
+                android:src="@drawable/smiley"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignBottom="@+id/editTextMessage"
+                />
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMessage"
+                android:layout_toStartOf="@+id/buttonMessage"
+                android:layout_toRightOf="@+id/buttonEmoji"
+                android:layout_toEndOf="@+id/buttonEmoji"
+                emojicon:emojiconSize="28sp"/>
+            <ImageView
+                android:id="@+id/buttonMessage"
+                android:src="@android:drawable/ic_menu_send"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="4dp"
+                android:layout_alignBottom="@+id/editTextMessage"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                />
+        </RelativeLayout>
     </RelativeLayout>
+
 </RelativeLayout>

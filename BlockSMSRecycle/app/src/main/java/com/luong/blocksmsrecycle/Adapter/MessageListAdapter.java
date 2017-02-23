@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         Message message = messageList.get(position);
         holder.txtMessage.setText(message.getContent());
+        holder.tvTimestamp.setText(converteTimestamp(String.valueOf(message.getTime())));
         if (getItemViewType(position) == LEFT_MSG) {
             TextDrawable drawable = null;
             String nameAvatar = address;
@@ -111,6 +113,10 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public void refreshData(List<Message> messageList) {
         this.messageList = messageList;
         notifyDataSetChanged();
+    }
+
+    public static CharSequence converteTimestamp(String mileSegundos){
+        return DateUtils.getRelativeTimeSpanString(Long.parseLong(mileSegundos), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
     }
 
 }

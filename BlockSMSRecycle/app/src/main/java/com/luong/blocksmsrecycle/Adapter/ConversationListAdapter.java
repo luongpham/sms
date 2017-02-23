@@ -36,13 +36,14 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtConversationListName, txtBodyMsg;
+        TextView txtConversationListName, txtBodyMsg, txtTime;
         ImageView imgAvatar;
         public ViewHolder(View itemView) {
             super(itemView);
             imgAvatar = (ImageView) itemView.findViewById(R.id.conversation_list_avatar);
             txtConversationListName = (TextView) itemView.findViewById(R.id.conversation_list_name);
             txtBodyMsg = (TextView) itemView.findViewById(R.id.conversation_list_snippet);
+            txtTime = (TextView) itemView.findViewById(R.id.conversation_list_date);
         }
     }
     @Override
@@ -56,8 +57,10 @@ public class ConversationListAdapter extends RecyclerView.Adapter<ConversationLi
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         Conversation conversation = conversations.get(position);
+        int count = conversation.getMessageList().size();
         holder.txtConversationListName.setText(conversation.getAddress());
         holder.txtBodyMsg.setText(conversation.getBody());
+        holder.txtTime.setText(MessageListAdapter.converteTimestamp(String.valueOf(conversation.getMessageList().get(count -1).getTime())));
         TextDrawable drawable = null;
         String nameAvatar = conversation.getAddress();
         if (isPhoneNumberFormat(nameAvatar)) {

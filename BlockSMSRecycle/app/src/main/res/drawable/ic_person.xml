@@ -9,7 +9,11 @@
         </shape>
     </item>
 
-    <item android:drawable="@drawable/user">
+    <item android:drawable="@drawable/user"
+        android:left="30dp"
+        android:right="30dp"
+        android:top="30dp"
+        android:bottom="30dp">
 
     </item>
 

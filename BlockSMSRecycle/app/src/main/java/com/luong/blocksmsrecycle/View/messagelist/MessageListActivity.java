@@ -3,9 +3,11 @@ package com.luong.blocksmsrecycle.View.messagelist;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -80,9 +82,23 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
         Log.d("TEST",threadId+" "+ conversation.getMessageList().size());
         messageListAdapter = new MessageListAdapter(this, messageList, conversation.getAddress());
+
+        messageListAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                int friendlyMessageCount = messageListAdapter.getItemCount();
+                int lastVisiblePosition = mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+                if (lastVisiblePosition == -1 ||
+                        (positionStart >= (friendlyMessageCount - 1) &&
+                                lastVisiblePosition == (positionStart - 1))) {
+                    rvListMessage.scrollToPosition(positionStart);
+                }
+            }
+        });
         rvListMessage.setLayoutManager(mLinearLayoutManager);
         rvListMessage.setAdapter(messageListAdapter);
-        messageListAdapter.notifyDataSetChanged();
 
         presenterLogicMessageList = new PresenterLogicMessageList(this,this);
 //        presenterLogicMessageList.getListMessage(threadId);
@@ -111,12 +127,12 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         if (edMessage.getText().toString().trim().length()>0) {
             sendSMS(conversation.getNumberPhone(), edMessage.getText().toString().trim());
-            edMessage.setText("");
             Message message = new Message();
             message.setContent(edMessage.getText().toString().trim());
             message.setType(2);
             messageList.add(message);
             messageListAdapter.refreshData(messageList);
+            edMessage.setText("");
         }
         else
             Toast.makeText(getBaseContext(),
@@ -132,9 +148,14 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         messageListAdapter.notifyDataSetChanged();
     }
 
-    private void sendSMS(String phoneNumber, String message) {
+    private void sendSMS(final String phoneNumber, final String message) {
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
+
+        ContentValues values = new ContentValues();
+        values.put("address", phoneNumber);
+        values.put("body", message);
+        getContentResolver().insert(Uri.parse("content://sms/sent"), values);
 
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
         PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
@@ -191,6 +212,7 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
                         Toast.makeText(getBaseContext(), "SMS delivered",
                                 Toast.LENGTH_SHORT).show();
+
                         break;
 
                     case Activity.RESULT_CANCELED:
@@ -205,6 +227,7 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
